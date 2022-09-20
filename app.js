@@ -1,12 +1,22 @@
-const prom = fetch('https://swapi.dev/api/planetsddsd');
+const prom = fetch('https://swapi.dev/api/planets');
 
-prom.then((response) => {
+prom
+    .then((response) => {
         if(!response.ok)
             throw new Error(response.status);        
-        response.json().then((contenidoRespuesta) => {
-            for (result of contenidoRespuesta.results)
-                console.log(result);
-        })
+        return response.json();
+    })
+    .then((contenidoRespuesta) => {
+        const filmUrl = contenidoRespuesta.results[0].films[0];
+        return fetch(filmUrl) ;          
+    })
+    .then((response) => {
+        if(!response.ok)
+            throw new Error(response.status);
+        return response.json();
+    })    
+    .then((data) => {
+        console.log(data);
     })
     .catch((error) => {
         console.log('Catch del error ', error);
