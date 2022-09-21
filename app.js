@@ -1,23 +1,33 @@
-const prom = fetch('https://swapi.dev/api/planets');
+const checkStatusAndParse = (response) => {    
+    if(!response.ok)
+        throw new Error(response.status);    
+    return response.json();
+}
 
-prom
-    .then((response) => {
-        if(!response.ok)
-            throw new Error(response.status);        
-        return response.json();
-    })
-    .then((contenidoRespuesta) => {
-        const filmUrl = contenidoRespuesta.results[0].films[0];
-        return fetch(filmUrl) ;          
-    })
-    .then((response) => {
-        if(!response.ok)
-            throw new Error(response.status);
-        return response.json();
-    })    
-    .then((data) => {
-        console.log(data);
-    })
+const printPlanets = (data) => {
+    for(let planet of data.results)
+        console.log(planet.name);    
+    return Promise.resolve(data);
+};
+
+const getPlanets = (data) => {    
+    return fetch(data.next);
+}
+
+fetch('https://swapi.dev/api/planets')
+    .then(checkStatusAndParse)
+    .then(printPlanets)
+    .then(getPlanets)
+    .then(checkStatusAndParse)
+    .then(printPlanets)
+    .then(getPlanets)
+    .then(checkStatusAndParse)
+    .then(printPlanets)
+    .then(getPlanets)
+    .then(checkStatusAndParse)
+    .then(printPlanets)
+    .then(getPlanets)
+    
     .catch((error) => {
         console.log('Catch del error ', error);
     })
